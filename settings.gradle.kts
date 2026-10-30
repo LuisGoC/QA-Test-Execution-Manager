@@ -1,0 +1,1 @@
+rootProject.name = "QA_Test_Execution_Manager"

@@ -1,0 +1,51 @@
+# =====================================
+# Java - Compiled files
+# =====================================
+*.class
+*.jar
+*.war
+*.ear
+
+# =====================================
+# Gradle - Generated files and cache
+# =====================================
+.gradle/
+**/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# =====================================
+# JStudio / IDE configuration
+# =====================================
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+
+# =====================================
+# Build output
+# =====================================
+bin/
+out/
+
+# =====================================
+# Temporary files and logs
+# =====================================
+*.log
+*.tmp
+*.bak
+*.swp
+*~
+
+# =====================================
+# Operating system files
+# =====================================
+.DS_Store
+Thumbs.db
+
+# =====================================
+# Local environment and secrets
+# =====================================
+.env
+.env.*
+local.properties
