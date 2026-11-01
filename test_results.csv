@@ -1,11 +1,8 @@
 TC001,Login Test,PASS,200,125
-TC009,Error1 Test,200,95
 TC002,Registration Test,FAIL,400,340
 TC003,Search Test,PASS,200,95
 TC004,Checkout Test,FAIL,500,780
-TC010,Error2 Test,null,200,95
 TC005,Logout Test,PASS,204,110
 TC006,Profile Update Test,SKIPPED,0,0
 TC007,Password Reset Test,PASS,200,215
-TC011,Error3 Test,PASS,abc,95
 TC008,Delete Account Test,FAIL,403,410

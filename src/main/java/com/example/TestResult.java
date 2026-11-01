@@ -1,3 +1,5 @@
+package com.example;
+
 public record TestResult(String testId, String testName, TestStatus status, int httpCode, long responseTime) {
     public TestResult {
         if(testId == null || testId.isBlank()) {

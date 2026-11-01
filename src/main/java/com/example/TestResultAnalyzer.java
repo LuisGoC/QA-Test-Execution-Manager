@@ -1,3 +1,5 @@
+package com.example;
+
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.Optional;
@@ -21,17 +23,14 @@ public class TestResultAnalyzer {
     }
     
     public long getPassedTests() {
-        //Predicate<TestResult> isPassedPredicate = result -> result.status().equals(TestStatus.PASS);
         return results.stream().filter(isPassed).count();
     }
     
     public long getFailedTests() {
-        //Predicate<TestResult> isFailedPredicate = result -> result.status().equals(TestStatus.FAIL);
         return results.stream().filter(isFailed).count();
     }
     
     public long getSkippedTests() {
-        //Predicate<TestResult> isSkippedPredicate = result -> result.status().equals(TestStatus.SKIPPED);
         return results.stream().filter(isSkipped).count();
     }
     
@@ -46,17 +45,14 @@ public class TestResultAnalyzer {
     }
     
     public double getAverageResponseTime() {
-        //Predicate<TestResult> isNotSkippedPredicate = result -> !result.status().equals(TestStatus.SKIPPED);
         return results.stream().filter(isNotSkipped).mapToLong(result -> result.responseTime()).average().orElse(0.0);
     }
     
     public Optional<TestResult> getSlowestTest() {
-        //Predicate<TestResult> isNotSkippedPredicate = result -> !result.status().equals(TestStatus.SKIPPED);
         return results.stream().filter(isNotSkipped).max(Comparator.comparingLong(result -> result.responseTime()));
     }
     
     public List<TestResult> getFailedTestResults() {
-        //Predicate<TestResult> isFailedPredicate = result -> result.status().equals(TestStatus.FAIL);
         return results.stream().filter(isFailed).toList();
     }
     

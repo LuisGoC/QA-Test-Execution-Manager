@@ -1,3 +1,5 @@
+package com.example;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -15,7 +17,7 @@ public class TestResultReader {
             lineNumber++;
             
             if(parts.length != 5) {
-                //System.out.println("Warning: Invalid data at line " + lineNumber);
+                System.out.println("Warning: Invalid data at line " + lineNumber);
                 continue;
             }
             
@@ -29,7 +31,7 @@ public class TestResultReader {
                 results.add(result);
             }
             catch(IllegalArgumentException e) {
-                //System.out.println("Warning: " + e.getMessage() + " at line " + lineNumber);
+                System.out.println("Warning: " + e.getMessage() + " at line " + lineNumber);
             }
         }
         

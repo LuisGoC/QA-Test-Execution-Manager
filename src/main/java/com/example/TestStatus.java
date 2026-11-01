@@ -1,3 +1,5 @@
+package com.example;
+
 public enum TestStatus {
     PASS("Test passed successfully"),
     FAIL("Test failed"),

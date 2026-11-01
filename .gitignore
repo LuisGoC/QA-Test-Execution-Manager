@@ -11,6 +11,8 @@
 # =====================================
 .gradle/
 **/build/
+
+# Keep the Gradle Wrapper JAR
 !gradle/wrapper/gradle-wrapper.jar
 
 # =====================================
@@ -27,6 +29,11 @@
 # =====================================
 bin/
 out/
+
+# =====================================
+# Generated reports
+# =====================================
+/execution_report.txt
 
 # =====================================
 # Temporary files and logs
