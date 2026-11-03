@@ -1,9 +1,16 @@
 package com.example;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
+
+import java.util.stream.Stream;
 
 public class TestResultTest {
     
@@ -74,5 +81,36 @@ public class TestResultTest {
     void shouldRejectHttpCodeAboveMaximum() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TestResult("TC001", "Login Test", TestStatus.PASS, 600, 150));
         assertEquals("HTTP Code must be between 100 and 599", exception.getMessage());
+    }
+    
+    //Parameterized Tests
+    @ParameterizedTest(name = "HTTP code {0} should be rejected")
+    @ValueSource(ints = {0, 99, 600, 700})
+    void shouldRejectHttpCodesOutsideValidRange(int httpCode) {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TestResult("TC001", "Login Test", TestStatus.PASS, httpCode, 150));
+        assertEquals("HTTP Code must be between 100 and 599", exception.getMessage());
+    }
+    
+    @ParameterizedTest
+    @CsvSource({
+        "PASS, 100",
+        "PASS, 200",
+        "FAIL, 404",
+        "FAIL, 599"
+    })
+    void shouldAcceptValidHttpCodes(String status, int httpCode) {
+        TestStatus testStatus = TestStatus.valueOf(status.trim());
+        assertDoesNotThrow(() -> new TestResult("TC001", "Login Test", testStatus, httpCode, 150));
+    }
+    
+    static Stream<String> invalidTestNames() {
+        return Stream.of("", " ", "   ");
+    }
+    
+    @ParameterizedTest
+    @MethodSource("invalidTestNames")
+    void shouldRejectBlankTestNames(String testName) {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TestResult("TC001", testName, TestStatus.PASS, 200, 150));
+        assertEquals("testName cannot be null or blank", exception.getMessage());
     }
 }
