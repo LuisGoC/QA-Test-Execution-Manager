@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 
 import java.util.stream.Stream;
 
@@ -19,12 +20,14 @@ public class TestResultTest {
     @DisplayName("Input Validation")
     class InputValidationTests {
         @Test
+        @Tag("negative")
         void shouldRejectBlankTestId() {
             IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TestResult("", "Login Test", TestStatus.PASS, 200, 150));
             assertEquals("testId cannot be null or blank", exception.getMessage());
         }
         
         @Test
+        @Tag("negative")
         void shouldRejectNullTestName() {
             IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TestResult("TC001", null, TestStatus.PASS, 200, 150));
             assertEquals("testName cannot be null or blank", exception.getMessage());
@@ -32,6 +35,7 @@ public class TestResultTest {
         
         @ParameterizedTest
         @MethodSource("com.example.TestResultTest#invalidTestNames")
+        @Tag("negative")
         void shouldRejectBlankTestNames(String testName) {
             IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TestResult("TC001", testName, TestStatus.PASS, 200, 150));
             assertEquals("testName cannot be null or blank", exception.getMessage());
@@ -43,6 +47,7 @@ public class TestResultTest {
     class HttpCodeValidationTests {
         @ParameterizedTest(name = "HTTP code {0} should be rejected")
         @ValueSource(ints = {0, 99, 600, 700})
+        @Tag("boundary")
         void shouldRejectHttpCodesOutsideValidRange(int httpCode) {
             IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TestResult("TC001", "Login Test", TestStatus.PASS, httpCode, 150));
             assertEquals("HTTP Code must be between 100 and 599", exception.getMessage());
@@ -123,6 +128,7 @@ public class TestResultTest {
     }
     
     @Test
+    @Tag("smoke")
     void shouldStoreAllTestResultFields() {
         // Arrange: Create a valid TestResult
         TestResult result = new TestResult("TC010", "Payment Test", TestStatus.PASS, 201, 250);

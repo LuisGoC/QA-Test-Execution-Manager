@@ -3,6 +3,7 @@ package com.example;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
@@ -25,6 +26,7 @@ public class TestResultAnalyzerTest {
     }
 
     @Test
+    @Tag("smoke")
     void shouldReturnCorrectTotalTests() {
         // Act: Execute the method being tested
         long totalTests = analyzer.getTotalTests();
@@ -34,6 +36,7 @@ public class TestResultAnalyzerTest {
     }
     
     @Test
+    @Tag("smoke")
     void shouldReturnCorrectPassedTests() {
         long totalPassed = analyzer.getPassedTests();
         assertEquals(1, totalPassed, "Test passed count should be 1");
@@ -61,6 +64,7 @@ public class TestResultAnalyzerTest {
     }
     
     @Test
+    @Tag("performance")
     void shouldCalculateStatisticsWithinTimeLimit() {
         assertTimeout(Duration.ofSeconds(2), () -> {
             long result = analyzer.getPassedTests();
