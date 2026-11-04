@@ -4,7 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTimeout;
 
+import java.time.Duration;
 import java.util.List;
 
 public class TestResultAnalyzerTest {
@@ -49,11 +51,6 @@ public class TestResultAnalyzerTest {
         assertEquals(1, totalSkipped, "Test skipped count should be 1");
     }
     
-    @AfterEach
-    void tearDown() {
-        System.out.println("Test execution completed.");
-    }
-    
     @Test
     void shouldReturnZeroWhenListIsEmpty() {
         List<TestResult> emptyResults = List.of();
@@ -61,5 +58,18 @@ public class TestResultAnalyzerTest {
         
         long totalTests = emptyAnalyzer.getTotalTests();
         assertEquals(0, totalTests, "Total test count should be 0");
+    }
+    
+    @Test
+    void shouldCalculateStatisticsWithinTimeLimit() {
+        assertTimeout(Duration.ofSeconds(2), () -> {
+            long result = analyzer.getPassedTests();
+            assertEquals(1, result);
+        });
+    }
+    
+    @AfterEach
+    void tearDown() {
+        System.out.println("Test execution completed.");
     }
 }
