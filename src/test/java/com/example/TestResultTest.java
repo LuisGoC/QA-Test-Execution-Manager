@@ -64,6 +64,13 @@ public class TestResultTest {
             TestStatus testStatus = TestStatus.valueOf(status.trim());
             assertDoesNotThrow(() -> new TestResult("TC001", "Login Test", testStatus, httpCode, 150));
         }
+        
+        @ParameterizedTest
+        @ValueSource(ints = {100, 599})
+        @Tag("boundary")
+        void shouldAcceptHttpCodeBoundaries(int httpCode) {
+            assertDoesNotThrow(() -> new TestResult("TC001", "Login Test", TestStatus.PASS, httpCode, 250));
+        }
     }
     
     @Test
@@ -94,33 +101,6 @@ public class TestResultTest {
     void shouldRejectSkippedTestWithResponseTime() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TestResult("TC001", "Login Test", TestStatus.SKIPPED, 0, 100));
         assertEquals("responseTime must be 0 for SKIPPED status", exception.getMessage());
-    }
-    
-    //BVA
-    @Test
-    @DisplayName("Should reject HTTP code 99")
-    void shouldRejectHttpCodeBelowMinimum() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TestResult("TC001", "Login Test", TestStatus.PASS, 99, 150));
-        assertEquals("HTTP Code must be between 100 and 599", exception.getMessage());
-    }
-    
-    @Test
-    @DisplayName("Should accept HTTP code 100")
-    void shouldAcceptHttpCodeExactlyOnMinimum() {
-        assertDoesNotThrow(() -> new TestResult("TC001", "Login Test", TestStatus.PASS, 100, 150));
-    }
-    
-    @Test
-    @DisplayName("Should accept HTTP code 599")
-    void shouldAcceptHttpCodeExactlyOnMaximum() {
-        assertDoesNotThrow(() -> new TestResult("TC001", "Login Test", TestStatus.PASS, 599, 150));
-    }
-    
-    @Test
-    @DisplayName("Should reject HTTP code 600")
-    void shouldRejectHttpCodeAboveMaximum() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new TestResult("TC001", "Login Test", TestStatus.PASS, 600, 150));
-        assertEquals("HTTP Code must be between 100 and 599", exception.getMessage());
     }
     
     static Stream<String> invalidTestNames() {

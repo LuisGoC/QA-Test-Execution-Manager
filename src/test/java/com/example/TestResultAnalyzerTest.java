@@ -4,8 +4,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
 import java.util.List;
@@ -72,8 +75,31 @@ public class TestResultAnalyzerTest {
         });
     }
     
-    @AfterEach
-    void tearDown() {
-        System.out.println("Test execution completed.");
+    @Test
+    void shouldReturnZeroStatisticsForEmptyResults() {
+        TestResultAnalyzer emptyAnalyzer = new TestResultAnalyzer(List.of());
+        
+        assertAll(
+            () -> assertEquals(0, emptyAnalyzer.getTotalTests(), "Total tests should be zero for empty results"),
+            () -> assertEquals(0, emptyAnalyzer.getPassedTests(), "Passed tests should be zero for empty results"),
+            () -> assertEquals(0, emptyAnalyzer.getFailedTests(), "Failed tests should be zero for empty results"),
+            () -> assertEquals(0, emptyAnalyzer.getSkippedTests(), "Skipped tests should be zero for empty results"),
+            () -> assertEquals(0.0, emptyAnalyzer.getPassRate(), "Pass rate should be 0.0 for empty results"),
+            () -> assertEquals(0.0, emptyAnalyzer.getAverageResponseTime(), "Average response time should be 0.0 for empty results"),
+            () -> assertTrue(emptyAnalyzer.getSlowestTest().isEmpty(), "Slowest test should be empty for empty results")
+        );
+    }
+    
+    @Test
+    void shouldExcludeSkippedTestsFromAverageResponseTime() {
+        List<TestResult> responseResults = List.of(
+            new TestResult("TC001", "Login Test", TestStatus.PASS, 200, 100),
+            new TestResult("TC002", "Search Test", TestStatus.FAIL, 500, 300),
+            new TestResult("TC003", "Checkout Test", TestStatus.SKIPPED, 0, 0)
+        );
+        
+        TestResultAnalyzer responseAnalyzer = new TestResultAnalyzer(responseResults);
+        
+        assertEquals(200.0, responseAnalyzer.getAverageResponseTime(), "Average response time should be 200.0 for the given results");
     }
 }

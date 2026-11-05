@@ -2,7 +2,7 @@
 
 A Java command-line application designed to **read, validate, analyze, and report software test execution results** from CSV files.
 
-This project demonstrates the practical application of **Core Java, Object-Oriented Programming (OOP), data validation, exception handling, file I/O, and the Stream API** in a Quality Assurance (QA) environment.
+This project demonstrates the practical application of **Core Java, Object-Oriented Programming (OOP), data validation, exception handling, file I/O, the Stream API, and JUnit 5 automated testing** in a Quality Assurance (QA) environment.
 
 ## Project Overview
 
@@ -10,7 +10,9 @@ The **QA Test Execution Manager** simulates a simplified test execution reportin
 
 The application reads test execution data from a CSV file, validates individual records, calculates execution statistics, analyzes response times, and generates a formatted text report.
 
-This project was developed to strengthen my Java programming skills and demonstrate foundational software engineering practices relevant to **QA Automation Engineering and Software Development Engineering in Test (SDET)**.
+An automated JUnit 5 test suite verifies data validation, statistics, CSV processing, and report generation.
+
+This project was developed to strengthen my Java programming and testing skills and demonstrate foundational software engineering practices relevant to **QA Automation Engineering and Software Development Engineering in Test (SDET)**.
 
 ## Key Features
 
@@ -22,12 +24,17 @@ This project was developed to strengthen my Java programming skills and demonstr
 - **Performance Analysis:** Calculates average response times, identifies the slowest test, and filters tests exceeding a specified response-time threshold.
 - **Report Generation:** Generates a formatted text report containing execution statistics and failed-test details.
 - **Edge-Case Handling:** Supports empty CSV files, skipped-only executions, passed-only executions, and missing input files.
+- **Automated Testing:** JUnit 5 tests cover validation, statistics, file processing, and report generation.
+- **Parameterized and Boundary Tests:** Tests multiple inputs and HTTP code boundaries.
+- **Isolated File Tests:** Uses JUnit `@TempDir` for temporary CSV and report files.
+- **Selective Test Execution:** JUnit `@Tag` with custom Gradle tasks for smoke, negative, boundary, and performance-tagged tests.
 
 ## Technologies & Tools
 
 | Technology | Purpose |
 |---|---|
 | Java 21 | Core application development |
+| JUnit 5 | Automated unit testing |
 | Gradle | Build automation and project configuration |
 | Git | Version control |
 | GitHub | Source code hosting |
@@ -48,6 +55,15 @@ This project was developed to strengthen my Java programming skills and demonstr
 - StringBuilder
 - Separation of Responsibilities
 
+### JUnit 5 Concepts Applied
+
+- `@Test`, `@BeforeEach`, and `@AfterEach`
+- `@ParameterizedTest`, `@ValueSource`, `@CsvSource`, and `@MethodSource`
+- `@Nested`, `@DisplayName`, and `@Tag`
+- `@TempDir` for isolated file testing
+- `assertAll()`, `assertThrows()`, `assertDoesNotThrow()`, and `assertTimeout()`
+- Positive, negative, boundary-value, and regression testing
+
 ## Project Structure
 
 The project follows the standard Gradle directory structure, with Java source files organized under the `com.example` package.
@@ -59,16 +75,20 @@ QA_Test_Execution_Manager/
 │       ├── gradle-wrapper.jar
 │       └── gradle-wrapper.properties
 ├── src/
-│   └── main/
-│       └── java/
-│           └── com/
-│               └── example/
-│                   ├── Main.java
-│                   ├── ReportGenerator.java
-│                   ├── TestResult.java
-│                   ├── TestResultAnalyzer.java
-│                   ├── TestResultReader.java
-│                   └── TestStatus.java
+│   ├── main/
+│   │   └── java/com/example/
+│   │       ├── Main.java
+│   │       ├── ReportGenerator.java
+│   │       ├── TestResult.java
+│   │       ├── TestResultAnalyzer.java
+│   │       ├── TestResultReader.java
+│   │       └── TestStatus.java
+│   └── test/
+│       └── java/com/example/
+│           ├── ReportGeneratorTest.java
+│           ├── TestResultAnalyzerTest.java
+│           ├── TestResultReaderTest.java
+│           └── TestResultTest.java
 ├── test_results.csv
 ├── build.gradle.kts
 ├── settings.gradle.kts
@@ -132,13 +152,13 @@ The project includes the Gradle Wrapper, so a separate Gradle installation is no
 Clone the repository:
 
 ```bash
-git clone https://github.com/LuisGoC/QA_Test_Execution_Manager.git
+git clone https://github.com/LuisGoC/QA-Test-Execution-Manager.git
 ```
 
 Navigate to the project directory:
 
 ```bash
-cd QA_Test_Execution_Manager
+cd QA-Test-Execution-Manager
 ```
 
 ### Build the Project
@@ -178,6 +198,8 @@ application {
 ```
 
 **Note:** The `test_results.csv` file must be located in the project's working directory, normally the project root when running through Gradle.
+
+On Android using JStudio, or if the wrapper is not executable, use `bash gradlew build` and `bash gradlew run`.
 
 ### Expected Console Output
 
@@ -287,9 +309,51 @@ Lists the identifiers and names of all failed tests.
 
 If no failed tests exist, the report displays `None`.
 
-## Testing & Validation
+## Automated Testing with JUnit 5
 
-The application was manually tested using six integration scenarios to verify its behavior under normal and exceptional conditions.
+The project includes four JUnit 5 test classes:
+
+| Test class | Coverage |
+|---|---|
+| `TestResultTest.java` | Record fields, validation, exceptions, and HTTP boundaries |
+| `TestResultAnalyzerTest.java` | Statistics, empty inputs, skipped tests, and timeout assertions |
+| `TestResultReaderTest.java` | Valid and invalid CSV rows, empty files, and missing files using `@TempDir` |
+| `ReportGeneratorTest.java` | Generated report content, saved TXT files, and empty reports |
+
+Tests use parameterized inputs, grouped assertions, isolated temporary files, and tags to support repeatable regression testing.
+
+### Run All Tests
+
+```bash
+bash gradlew test --rerun-tasks
+```
+
+On Linux/macOS, you can use `./gradlew test`; on Windows, use `gradlew.bat test`.
+
+Run an individual test class:
+
+```bash
+bash gradlew test --tests com.example.TestResultReaderTest
+```
+
+### Run Tests by Tag
+
+The Gradle build defines custom tasks for selected JUnit tags:
+
+| Command | Category |
+|---|---|
+| `bash gradlew smokeTest --rerun-tasks` | Core smoke checks |
+| `bash gradlew negativeTest --rerun-tasks` | Invalid-input checks |
+| `bash gradlew boundaryTest --rerun-tasks` | Boundary-value checks |
+| `bash gradlew performanceTest --rerun-tasks` | Timeout-based checks |
+
+The performance-tagged checks demonstrate time-limit assertions; they are not load tests or performance benchmarks.
+
+Gradle generates an HTML report for the complete suite at `build/reports/tests/test/index.html`. Custom test tasks produce their own reports under `build/reports/tests/`.
+
+### Manual Integration Testing
+
+The application was also manually tested using six integration scenarios:
 
 | Test Scenario | Expected Result | Status |
 |---|---|---|
@@ -300,11 +364,9 @@ The application was manually tested using six integration scenarios to verify it
 | Only passed tests | Display a 100% pass rate and no failed tests | PASS |
 | Missing CSV file | Handle the file error without an unhandled exception | PASS |
 
-**Testing Results: 6/6 scenarios passed.**
+**Manual testing results: 6/6 scenarios passed.**
 
-These scenarios were verified through application execution and output inspection.
-
-Automated unit tests have not yet been implemented.
+These manual scenarios were verified through application execution and output inspection.
 
 ## Project Results
 
@@ -315,6 +377,9 @@ Automated unit tests have not yet been implemented.
 - Implemented exception handling for invalid input and file-processing errors.
 - Generated readable execution reports containing test summaries and failed-test details.
 - Verified application behavior across six integration scenarios.
+- Added JUnit 5 automated tests for the data model, analyzer, CSV reader, and report generator.
+- Applied parameterized tests, boundary-value analysis, and isolated file testing.
+- Configured tagged Gradle tasks for selective test execution.
 - Organized the source code using the `com.example` Java package.
 - Configured Gradle for application build and execution.
 
@@ -329,12 +394,13 @@ Current limitations include:
 - Test execution results are read from a local file rather than collected directly from a test automation framework.
 - Reports are generated in plain-text format.
 - Input and output paths are currently fixed in the application.
-- Automated unit tests have not yet been implemented.
+- Automated tests focus on individual components rather than full end-to-end application execution.
+- No code coverage measurement tool is currently configured.
 
 ## Future Improvements
 
-- Implement automated unit tests using JUnit 5.
-- Add parameterized tests for validation rules and edge cases.
+- Integrate JaCoCo to measure automated test code coverage.
+- Expand end-to-end regression coverage.
 - Integrate test execution results from automated testing frameworks.
 - Support additional report formats such as JSON and HTML.
 - Improve CSV parsing and error reporting.
@@ -357,14 +423,17 @@ Through this project, I strengthened my understanding of Java fundamentals and s
 - Organizing Java source code using packages.
 - Configuring and building Java applications with Gradle.
 - Testing expected behavior and edge cases.
+- Writing JUnit 5 unit and parameterized tests.
+- Testing files safely with `@TempDir`.
+- Organizing smoke, negative, boundary, and timeout-based tests using Gradle tasks.
 
 ## Project Status
 
-**Core Java implementation complete.**
+**Core Java implementation complete. JUnit 5 automated test suite implemented.**
 
 All five development milestones have been completed, and the application has passed six manually executed integration scenarios.
 
-Future development will focus on automated unit testing with JUnit 5 and integration with QA automation tools.
+The automated test suite covers the data model, analyzer, CSV reader, and report generator. Future development may include code coverage reporting, CI/CD integration, and API automation using REST Assured.
 
 ---
 

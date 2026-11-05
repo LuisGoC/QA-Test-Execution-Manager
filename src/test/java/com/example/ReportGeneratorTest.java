@@ -48,4 +48,23 @@ class ReportGeneratorTest {
             () -> assertTrue(report.contains("Passed: 1")) // Verify that it contains "Passed: 1"
         );
     }
+    
+    @Test
+    void shouldGenerateReportForEmptyResults() {
+        // Create a TestResultAnalyzer using an empty list
+        TestResultAnalyzer analyzer = new TestResultAnalyzer(List.of());
+        // Create a ReportGenerator
+        ReportGenerator generator = new ReportGenerator(analyzer);
+        // Call generateareport()
+        String report = generator.generateReport();
+        // Assertions
+        assertAll(
+            () -> assertTrue(report.contains("Total Tests: 0")),
+            () -> assertTrue(report.contains("Passed: 0")),
+            () -> assertTrue(report.contains("Failed: 0")),
+            () -> assertTrue(report.contains("Skipped: 0")),
+            () -> assertTrue(report.contains("Slowest Test: N/A")),
+            () -> assertTrue(report.contains("Failed Tests:\nNone"))
+        );
+    }
 }
